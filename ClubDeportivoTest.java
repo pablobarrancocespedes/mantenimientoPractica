@@ -81,11 +81,12 @@ class ClubDeportivoTest{
         clubdeportivo.anyadirActividad(grupo1);
         grupo.actualizarPlazas(3);
         clubdeportivo.anyadirActividad(grupo);
+        assertEquals("cd --> [ " + grupo.toString() + ", " + grupo1.toString() + " ]", clubdeportivo.toString());
     }
 
 
     @Test
-    @DisplayName("")
+    @DisplayName("Matricular debe lanzar una excepcion al ser plazas mayor que el npersonas")
     public void matricularTest_plazasMayorQueNPersonas_returnThrowException() throws ClubException{
         ClubDeportivo clubdeportivo = new ClubDeportivo("cd");
         Grupo grupo = new Grupo("codigo", "natacion", 2, 1, 2);
@@ -93,8 +94,10 @@ class ClubDeportivoTest{
         assertThrows(ClubException.class, ()-> clubdeportivo.matricular("natacion", 100));
     }
 
+
+    
     @Test
-    @DisplayName("")
+    @DisplayName("Matricular debe matricular a npersonas en la actividad")
     public void matricularTest_plazasMenorQueNPersonas_returnTrue() throws ClubException{
         ClubDeportivo clubdeportivo = new ClubDeportivo("cd");
         Grupo grupo1 = new Grupo("codigo", "natacion", 2, 1, 2);
@@ -106,6 +109,7 @@ class ClubDeportivoTest{
         clubdeportivo.matricular("atletismo", 2);
         assertEquals(clubdeportivo.plazasLibres("atletismo"),1);
     }
+
 
 }
 
