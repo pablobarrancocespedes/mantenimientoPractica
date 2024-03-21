@@ -1,12 +1,9 @@
+package clubdeportivo;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import clubdeportivo.ClubDeportivo;
-import clubdeportivo.ClubDeportivoAltoRendimiento;
-import clubdeportivo.ClubException;
-import clubdeportivo.Grupo;
 
 public class ClubDeportivoAltoRendimientoTest {
     @Test
@@ -55,5 +52,35 @@ public class ClubDeportivoAltoRendimientoTest {
         }
         
     }
+
+    @Test
+    @DisplayName("La longitud de datos debe ser mayor o igual que 5 ")
+    public void anyadirActividadTest_datosLengthMenorQue5_throwsException() throws ClubException{
+        ClubDeportivoAltoRendimiento clubDeportivo = new ClubDeportivoAltoRendimiento("cd",2,7);
+        String[] datos = {"codigo"};
+        assertThrows(ClubException.class,()-> clubDeportivo.anyadirActividad(datos));
+    }
+
+    @Test
+    @DisplayName("El formato de datos debe ser correcto")
+    public void anyadirActividadTest_datosFormatoIncorrecto_throwsException() throws ClubException{
+        ClubDeportivoAltoRendimiento clubDeportivo = new ClubDeportivoAltoRendimiento("cd",2,7);
+        String[] datos = {"codigo", "actividad", "2.3", "2", "3"};
+        assertThrows(ClubException.class,()-> clubDeportivo.anyadirActividad(datos));
+    }
+
+    @Test
+    @DisplayName("El formato de datos debe ser correcto")
+    public void anyadirActividadTest_datosFormatoCorrecto_returnTrue() throws ClubException{
+        ClubDeportivoAltoRendimiento clubDeportivo = new ClubDeportivoAltoRendimiento("cd",2,7);
+        String[] datos1 = {"codigo", "natacion", "2", "2", "3"};
+        clubDeportivo.anyadirActividad(datos1);
+        String[] datos2 = {"codigo", "atletismo", "2", "2", "3"};
+        clubDeportivo.anyadirActividad(datos2);
+        grupo.actualizarPlazas(3);
+        clubdeportivo.anyadirActividad(grupo);
+        assertEquals("cd --> [ " + grupo.toString() + ", " + grupo1.toString() + " ]", clubdeportivo.toString());
+    }
+
 
 }
