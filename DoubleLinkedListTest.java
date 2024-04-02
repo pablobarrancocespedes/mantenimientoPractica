@@ -69,7 +69,7 @@ public class DoubleLinkedListTest {
 
     @Test
     @DisplayName("delete first borra el primero de la cola")
-    public void deleteFirstTest_colaVacia_throwException(){
+    public void deleteFirstTest_colaNoVacia_throwException(){
         DoubleLinkedList<String> colaDoble = new DoubleLinkedList<>();
         String str = "hola";
         String str2 = "adios";
@@ -81,7 +81,7 @@ public class DoubleLinkedListTest {
 
     @Test
     @DisplayName("delete last borra el ultimo de la cola")
-    public void deleteFirstTest_colaVacia_throwException(){
+    public void deleteLastTest_colaNoVacia_throwException(){
         DoubleLinkedList<String> colaDoble = new DoubleLinkedList<>();
         String str = "hola";
         String str2 = "adios";
@@ -89,5 +89,31 @@ public class DoubleLinkedListTest {
         colaDoble.append(str2);
         colaDoble.deleteLast();
         assertEquals(colaDoble.last(), str);
+    }
+
+    @Test
+    @DisplayName("delete first borra el primero de la cola")
+    public void deleteFirstTest_colaNoVaciaUnElemento_throwException(){
+        DoubleLinkedList<String> colaDoble = new DoubleLinkedList<>();
+        String str = "hola";
+        String str2 = "adios";
+        colaDoble.append(str);
+        colaDoble.deleteFirst();
+        assertEquals(0, colaDoble.size());
+        assertThrows(DoubleLinkedQueueException.class,() -> colaDoble.first());
+        assertThrows(DoubleLinkedQueueException.class,() -> colaDoble.last());
+    }
+
+    @Test
+    @DisplayName("delete last borra el ultimo de la cola")
+    public void deleteLastTest_colaNoVaciaUnElemento_throwException(){
+        DoubleLinkedList<String> colaDoble = new DoubleLinkedList<>();
+        String str = "hola";
+        String str2 = "adios";
+        colaDoble.append(str);
+        colaDoble.deleteLast();
+        assertEquals(0, colaDoble.size());
+        assertThrows(DoubleLinkedQueueException.class,() -> colaDoble.first());
+        assertThrows(DoubleLinkedQueueException.class,() -> colaDoble.last());
     }
 }
