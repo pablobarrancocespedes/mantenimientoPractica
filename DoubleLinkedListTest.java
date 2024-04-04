@@ -1,11 +1,28 @@
+/*
+ * Autores:
+ * Pablo Barranco Cespedes
+ * Raquel Ferreira Macayo
+ */
+package deque;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import org.apache.poi.ss.formula.functions.T;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mps.deque.DoubleLinkedList;
-import org.mps.deque.DoubleLinkedQueueException;
+
+
+
 public class DoubleLinkedListTest {
+
+    @Test
+    @DisplayName("El constructor crea una cola doble correctamente")
+    public void doubleLinkedListTest_returnTrue(){
+        DoubleLinkedList<String> colaDoble = new DoubleLinkedList<>();
+        assertThrows( DoubleLinkedQueueException.class, ()-> colaDoble.first());
+        assertThrows( DoubleLinkedQueueException.class, ()-> colaDoble.last());
+        assertEquals(colaDoble.size(), 0);
+    }
+
     @Test
     @DisplayName("prepend devuelve una cola con un solo elemento si la cola esta vacia")
     public void prependTest_colaVacia_returnTrue(){
@@ -62,7 +79,7 @@ public class DoubleLinkedListTest {
 
     @Test
     @DisplayName("delete last lanza una excepcion si se hace en una cola vacia")
-    public void deleteLasttTest_colaVacia_throwException(){
+    public void deleteLastTest_colaVacia_throwException(){
         DoubleLinkedList<String> colaDoble = new DoubleLinkedList<>();
         assertThrows(DoubleLinkedQueueException.class, () -> colaDoble.deleteLast());
     }
@@ -90,7 +107,6 @@ public class DoubleLinkedListTest {
         colaDoble.deleteLast();
         assertEquals(colaDoble.last(), str);
     }
-
     @Test
     @DisplayName("delete first borra el primero de la cola")
     public void deleteFirstTest_colaNoVaciaUnElemento_throwException(){
@@ -116,4 +132,109 @@ public class DoubleLinkedListTest {
         assertThrows(DoubleLinkedQueueException.class,() -> colaDoble.first());
         assertThrows(DoubleLinkedQueueException.class,() -> colaDoble.last());
     }
+
+    @Test
+    @DisplayName("get lanza una excepcion si index < 0")
+    public void getTest_indexMenorQueCero_throwsException(){
+        DoubleLinkedList<String> colaDoble = new DoubleLinkedList<>();
+        assertThrows(DoubleLinkedQueueException.class,() -> colaDoble.get(-1));
+    }
+
+    @Test
+    @DisplayName("get lanza una excepcion si index >= size")
+    public void getTest_indexMayorIgualQueSize_throwsException(){
+        DoubleLinkedList<String> colaDoble = new DoubleLinkedList<>();
+        String str = "hola";
+        colaDoble.append(str);
+        assertThrows(DoubleLinkedQueueException.class,() -> colaDoble.get(2));
+    }
+
+    @Test
+    @DisplayName("get lanza una excepcion si index >= size")
+    public void getTest_indexMayorQueCeroyMenorQueSize_returnTrue(){
+        DoubleLinkedList<String> colaDoble = new DoubleLinkedList<>();
+        String str = "hola";
+        String str2 = "adios";
+        colaDoble.append(str);
+        colaDoble.append(str2);
+        assertEquals(str2,colaDoble.get(1));
+    }
+
+    @Test
+    @DisplayName("contains lanza una excepcion si value es nulo")
+    public void containsTest_valueNull_throwsException(){
+        DoubleLinkedList<String> colaDoble = new DoubleLinkedList<>();
+        assertThrows(DoubleLinkedQueueException.class,() -> colaDoble.contains(null));
+    }
+
+    @Test
+    @DisplayName("contains devuelve false si value no esta en la cola")
+    public void containsTest_noContieneAValue_returnFalse(){
+        DoubleLinkedList<String> colaDoble = new DoubleLinkedList<>();
+        String str = "hola";
+        assertFalse(colaDoble.contains(str));
+    }
+
+    @Test
+    @DisplayName("contains devuelve true si value esta en la cola")
+    public void containsTest_contieneAValue_returnTrue(){
+        DoubleLinkedList<String> colaDoble = new DoubleLinkedList<>();
+        String str = "hola";
+        String str2 = "adios";
+        colaDoble.append(str);
+        colaDoble.append(str2);
+        assertTrue(colaDoble.contains(str2));
+    }
+
+    @Test
+    @DisplayName("Remove elimina el primer item de la lista")
+    public void removeTest_EliminarPrimero_returnTrue(){
+        DoubleLinkedList<String> colaDoble = new DoubleLinkedList<>();
+        String str = "hola";
+        String str2 = "adios";
+        colaDoble.append(str);
+        colaDoble.append(str2);
+        colaDoble.remove(str);
+        assertEquals(colaDoble.first(), str2);
+    }
+
+    @Test
+    @DisplayName("Remove elimina el ultimo item de la lista")
+    public void removeTest_EliminarUltimo_returnTrue(){
+        DoubleLinkedList<String> colaDoble = new DoubleLinkedList<>();
+        String str = "hola";
+        String str2 = "adios";
+        colaDoble.append(str);
+        colaDoble.append(str2);
+        colaDoble.remove(str2);
+        assertEquals(colaDoble.last(), str);
+    }
+
+    @Test
+    @DisplayName("Remove elimina un item que no es ni primero ni ultimo de la lista")
+    public void removeTest_EliminarMedio_returnTrue(){
+        DoubleLinkedList<String> colaDoble = new DoubleLinkedList<>();
+        String str = "hola";
+        String str2 = "adios";
+        String str3 = "zzz";
+        colaDoble.append(str);
+        colaDoble.append(str2);
+        colaDoble.append(str3);
+        colaDoble.remove(str2);
+        assertEquals(colaDoble.first(), str);
+        assertEquals(colaDoble.last(), str3);
+        assertEquals(colaDoble.size(), 2);
+    }
+
+
+    @Test
+    @DisplayName("Remove no hace nada lista vacia")
+    public void removeTest_ListaVacia_returnTrue(){
+        DoubleLinkedList<String> colaDoble = new DoubleLinkedList<>();
+        colaDoble.remove("hola");
+        assertEquals(colaDoble.size(), 0);
+    }
+
+
+    
 }
