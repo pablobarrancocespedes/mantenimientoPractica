@@ -125,89 +125,85 @@ public class DoubleLinkedList<T> implements DoubleLinkedQueue<T> {
 
     @Override
     public void remove(T value) {
-        LinkedNode<T> current = first;
-        while (current != null) {
-            if (current.getItem().equals(value)) {
-                if (current == first) {
+        LinkedNode<T> actual = first;
+        while (actual != null) {
+            if (actual.getItem().equals(value)) {
+                if (actual == first) {
                     deleteFirst();
                     return;
-                } else if (current == last) {
+                } else if (actual == last) {
                     deleteLast();
                     return;
                 } else {
-                    current.getPrevious().setNext(current.getNext());
-                    current.getNext().setPrevious(current.getPrevious());
+                    actual.getPrevious().setNext(actual.getNext());
+                    actual.getNext().setPrevious(actual.getPrevious());
                     size--;
                     return;
                 }
             }
-            current = current.getNext();
+            actual = actual.getNext();
         }
     }
 
-    // Method within DoubleLinkedList class
+   
 @Override
 public void sort(Comparator<? super T> comparator) {
-    if (first != last) { // If the list has more than one element
+    if (size > 1) { 
         first = mergeSort(first, comparator);
-        // Reset last to the last node
-        LinkedNode<T> current = first;
-        while (current.getNext() != null) {
-            current = current.getNext();
+        LinkedNode<T> actual = first;
+        while (actual.getNext() != null) {
+            actual = actual.getNext();
         }
-        last = current;
+        last = actual;
     }
 }
 
-// Recursive mergeSort method
-private LinkedNode<T> mergeSort(LinkedNode<T> head, Comparator<? super T> comparator) {
-    if (head == null || head.getNext() == null) {
-        return head;
+private LinkedNode<T> mergeSort(LinkedNode<T> pivote, Comparator<? super T> comparator) {
+    if (pivote == null || pivote.getNext() == null) {
+        return pivote;
     }
-    LinkedNode<T> middle = getMiddle(head);
-    LinkedNode<T> nextOfMiddle = middle.getNext();
-    middle.setNext(null);
+    LinkedNode<T> medio = getMedio(pivote);
+    LinkedNode<T> siguiente = medio.getNext();
+    medio.setNext(null);
 
-    LinkedNode<T> left = mergeSort(head, comparator);
-    LinkedNode<T> right = mergeSort(nextOfMiddle, comparator);
+    LinkedNode<T> izq = mergeSort(pivote, comparator);
+    LinkedNode<T> der = mergeSort(siguiente, comparator);
 
-    return merge(left, right, comparator);
+    return merge(izq, der, comparator);
 }
 
-// Method to get the middle of the list
-private LinkedNode<T> getMiddle(LinkedNode<T> head) {
-    if (head == null) return null;
-    LinkedNode<T> slow = head, fast = head.getNext();
-    while (fast != null && fast.getNext() != null) {
-        slow = slow.getNext();
-        fast = fast.getNext().getNext();
+private LinkedNode<T> getMedio(LinkedNode<T> pivote) {
+    if (pivote == null) return null;
+    LinkedNode<T> actual = pivote, siguiente = pivote.getNext();
+    while (siguiente != null && siguiente.getNext() != null) {
+        actual = actual.getNext();
+        siguiente = siguiente.getNext().getNext();
     }
-    return slow;
+    return actual;
 }
 
-// Method to merge two sorted lists
 private LinkedNode<T> merge(LinkedNode<T> a, LinkedNode<T> b, Comparator<? super T> comparator) {
-    LinkedNode<T> dummyHead = new LinkedNode<>(null, null, null);
-    LinkedNode<T> current = dummyHead;
+    LinkedNode<T> falsoPivote = new LinkedNode<>(null, null, null);
+    LinkedNode<T> actual = falsoPivote;
     while (a != null && b != null) {
         if (comparator.compare(a.getItem(), b.getItem()) <= 0) {
-            current.setNext(a);
-            a.setPrevious(current);
+            actual.setNext(a);
+            a.setPrevious(actual);
             a = a.getNext();
         } else {
-            current.setNext(b);
-            b.setPrevious(current);
+            actual.setNext(b);
+            b.setPrevious(actual);
             b = b.getNext();
         }
-        current = current.getNext();
+        actual = actual.getNext();
     }
-    current.setNext((a == null) ? b : a);
+    actual.setNext((a == null) ? b : a);
     if (a == null) {
-        if (b != null) b.setPrevious(current);
+        if (b != null) b.setPrevious(actual);
     } else {
-        a.setPrevious(current);
+        a.setPrevious(actual);
     }
-    return dummyHead.getNext();
+    return falsoPivote.getNext();
 }
 
 }
