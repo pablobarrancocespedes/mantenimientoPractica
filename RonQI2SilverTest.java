@@ -14,7 +14,6 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mps.dispositivo.Dispositivo;
 import org.mps.dispositivo.DispositivoSilver;
 
@@ -154,7 +153,8 @@ public class RonQI2SilverTest {
      */
      
     @Test
-    public void evaluarApneaSuenyoTest_returnTrue(){
+    @DisplayName("evaluarApneaSuenyo devuelve true si las medias son mayores que los threshold")
+    public void evaluarApneaSuenyoTest_avgMayorQueThreshold_returnTrue(){
         Dispositivo mockDisp =  mock(Dispositivo.class);
         RonQI2Silver ronqi2silver = new RonQI2Silver();
         when(mockDisp.leerSensorPresion()).thenReturn(50f);
@@ -165,7 +165,8 @@ public class RonQI2SilverTest {
     }
 
     @Test
-    public void evaluarApneaSuenyoTest_avgSmenorQueThresholdS_returnFalse(){
+    @DisplayName("evaluarApneaSuenyo devuelve false si la media del SensorS es menor que su threshold")
+    public void evaluarApneaSuenyoTest_avgSMenorQueThresholdS_returnFalse(){
         Dispositivo mockDisp =  mock(Dispositivo.class);
         RonQI2Silver ronqi2silver = new RonQI2Silver();
         when(mockDisp.leerSensorPresion()).thenReturn(30f);
@@ -176,7 +177,8 @@ public class RonQI2SilverTest {
     }
 
     @Test
-    public void evaluarApneaSuenyoTest_avgPmenorQueThresholdS_returnFalse(){
+    @DisplayName("evaluarApneaSuenyo devuelve false si la media del SensorP es menor que su threshold")
+    public void evaluarApneaSuenyoTest_avgPMenorQueThresholdP_returnFalse(){
         Dispositivo mockDisp =  mock(Dispositivo.class);
         RonQI2Silver ronqi2silver = new RonQI2Silver();
         when(mockDisp.leerSensorPresion()).thenReturn(10f);
@@ -187,7 +189,8 @@ public class RonQI2SilverTest {
     }
 
     @Test
-    public void evaluarApneaSuenyoTest_returnFalse(){
+    @DisplayName("evaluarApneaSuenyo devuelve false si las medias son menores que los threshold")
+    public void evaluarApneaSuenyoTest_avgMenorQueThreshold_returnFalse(){
         Dispositivo mockDisp =  mock(Dispositivo.class);
         RonQI2Silver ronqi2silver = new RonQI2Silver();
         when(mockDisp.leerSensorPresion()).thenReturn( 6f);
@@ -203,53 +206,13 @@ public class RonQI2SilverTest {
      * https://junit.org/junit5/docs/current/user-guide/index.html#writing-tests-parameterized-tests
      */
 
-    @ParameterizedTest
-    @ValueSource(floats = { 30f, 50f, 40f, 30f, 40f, 50f })
-    public void evaluarApneaSuenyo_MasDe5LecturasP_return(float candidate) {
-        Dispositivo mockDisp =  mock(Dispositivo.class);
-        RonQI2Silver ronqi2silver = new RonQI2Silver();
-        ronqi2silver.anyadirDispositivo(mockDisp);
-
-        when(mockDisp.leerSensorPresion()).thenReturn(candidate);
-        ronqi2silver.obtenerNuevaLectura();
-        assertFalse(ronqi2silver.evaluarApneaSuenyo());
-    }
-
-    @ParameterizedTest
-        @DisplayName("Comprueba que como ya habia 5 lecturas, al añadir otra borra la primera y ahora como la media de la Presion es menor devulve falso")
-        @ValueSource(floats = {22.0f, 24.0f, 26.0f, 23.0f, 21.0f, 0.0f})
-        public void evaluarApneaSuenyo_6LecturasMediaPresionMenor_returnFalse(float candidate){
-            DispositivoSilver mockDisp =  mock(DispositivoSilver.class);
-            RonQI2Silver ronqi2silver = new RonQI2Silver();
-            ronqi2silver.anyadirDispositivo(mockDisp);
-            when(mockDisp.leerSensorPresion()).thenReturn(candidate);
-            ronqi2silver.obtenerNuevaLectura();
-
-            boolean result = ronqi2silver.evaluarApneaSuenyo();
-
-            assertFalse(result);
-        }
-
-    @ParameterizedTest
-    @ValueSource(floats = { 1f, 0f, 0f, 0f, 0f, 0f })
-    public void evaluarApneaSuenyo_MasDe5LecturasS_return(Float candidate) {
-        DispositivoSilver mockDisp =  mock(DispositivoSilver.class);
-        RonQI2Silver ronqi2silver = new RonQI2Silver();
-        ronqi2silver.disp = mockDisp;
-        when(mockDisp.leerSensorPresion()).thenReturn(20f);
-        when(mockDisp.leerSensorSonido()).thenReturn( candidate);
-        ronqi2silver.anyadirDispositivo(mockDisp);
-        ronqi2silver.obtenerNuevaLectura();
-        assertFalse(ronqi2silver.evaluarApneaSuenyo());
-    }
-
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     public class pruebaevaluarApneaSuenyo{
         @ParameterizedTest
-        @DisplayName("Comprueba que como hay 5 lecturas todas caben, y como la media de el Sonido es menor devuelve falso")
+        @DisplayName("obtenerNuevaLectura comprueba que no hay mas de 5 lecturas y evaluarApneaSuenyo devuelve false al ser la media Sonido menor que su threshold")
         @MethodSource("presionYSonidoProvider1")
-        public void evaluarApneaSuenyo_5LecturasMediaSonidoMenor_returnFalse(List<Float> presiones, List<Float> sonidos){
+        public void evaluarApneaSuenyoTest_5LecturasMediaSMenorQueThresholdS_returnFalse(List<Float> presiones, List<Float> sonidos){
             DispositivoSilver mockDisp =  mock(DispositivoSilver.class);
             RonQI2Silver ronqi2silver = new RonQI2Silver();
             ronqi2silver.disp = mockDisp;
@@ -265,10 +228,36 @@ public class RonQI2SilverTest {
         }
 
         Stream<Arguments> presionYSonidoProvider1() {
-            List<Float> l1 = Arrays.asList(0f, 22.0f, 24.0f, 26.0f, 23.0f, 21.0f);
-            List<Float> l2 = Arrays.asList(0f, 31.0f, 32.0f, 33.0f, 31.0f, 0.0f);
+            List<Float> lista1 = Arrays.asList( 22.0f, 24.0f, 26.0f, 23.0f, 21.0f);
+            List<Float> lista2 = Arrays.asList( 31.0f, 32.0f, 33.0f, 31.0f, 0.0f);
             return Stream.of(
-                Arguments.of(l1, l2)
+                Arguments.of(lista1, lista2)
+            );
+        }
+
+        @ParameterizedTest
+        @DisplayName("obtenerNuevaLectura comprueba que hay 10 lecturas y elimina las 4 primeras y evaluarApneaSuenyo devuelve false al ser la media Presion menor que su threshold")
+        @MethodSource("presionYSonidoProvider2")
+        public void evaluarApneaSuenyo_MasDe5LecturasMediaPMenorQueThresholdP_returnFalse(List<Float> presiones, List<Float> sonidos){
+            DispositivoSilver mockDisp =  mock(DispositivoSilver.class);
+            RonQI2Silver ronqi2silver = new RonQI2Silver();
+            ronqi2silver.disp = mockDisp;
+            for (int i = 0; i < presiones.size(); i++) {
+                when(mockDisp.leerSensorPresion()).thenReturn(presiones.get(i));
+                when(mockDisp.leerSensorSonido()).thenReturn(sonidos.get(i));
+                ronqi2silver.obtenerNuevaLectura();
+            }
+
+            boolean result = ronqi2silver.evaluarApneaSuenyo();
+
+            assertFalse(result);
+        }
+
+        Stream<Arguments> presionYSonidoProvider2() {
+            List<Float> lista1 = Arrays.asList(0f, 0f, 0f, 0f, 0f, 22.0f, 24.0f, 26.0f, 23.0f, 0.0f);
+            List<Float> lista2 = Arrays.asList(0f, 0f, 0f, 0f, 0f, 31.0f, 32.0f, 33.0f, 31.0f, 30.0f);
+            return Stream.of(
+                Arguments.of(lista1, lista2)
             );
         }
 
